@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { redirect } from "next/navigation";
 import { NavLinks } from "@/components/nav-links";
 import { LogoutButton } from "@/components/logout-button";
 import { createClient } from "@/lib/supabase/server";
@@ -8,6 +9,11 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
   const nome = (user?.user_metadata?.nome as string | undefined) ?? user?.email ?? "Usuário";
 
   return (
